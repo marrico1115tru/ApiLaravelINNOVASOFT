@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable; // Para autenticación
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Usuario extends Authenticatable
+class Usuario extends Authenticatable implements JWTSubject
 {
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
@@ -33,7 +33,19 @@ class Usuario extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
-    // Relaciones
+    // 🔐 Métodos requeridos por JWT
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [];
+    }
+
+
+    
     public function area(): BelongsTo
     {
         return $this->belongsTo(Area::class, 'id_area');
